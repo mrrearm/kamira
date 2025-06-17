@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kamira - L'Arte del Caffè Cremoso</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            line-height: 1.6;
+            color: #2c1810;
+            background: linear-gradient(135deg, #3a2317 0%, #5d3b2a 25%, #8b5a3c 50%, #a67c52 75%, #d4af8c 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Chicchi di caffè fluttuanti */
+        .coffee-beans {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .bean {
+            position: absolute;
+            width: 8px;
+            height: 12px;
+            background: #3a2317;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            opacity: 0;
+            animation: float 12s infinite ease-in-out;
+            box-shadow: inset 1px 1px 2px rgba(255,255,255,0.1), 
+                        0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .bean::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 1px;
+            height: 8px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 1px;
+        }
+
+        @keyframes float {
+            0% { 
+                transform: translateY(100vh) translateX(0px) rotate(0deg) scale(1);
+                opacity: 0;
+            }
+            10% {
+                opacity: 0.3;
+            }
+            20% { 
+                transform: translateY(80vh) translateX(10px) rotate(45deg) scale(1.1);
+            }
+            40% { 
+                transform: translateY(50vh) translateX(-15px) rotate(90deg) scale(0.9);
+            }
+            60% { 
+                transform: translateY(30vh) translateX(20px) rotate(180deg) scale(1.2);
+            }
+            80% { 
+                transform: translateY(10vh) translateX(-10px) rotate(270deg) scale(0.8);
+            }
+            90% {
+                opacity: 0.3;
+            }
+            100% { 
+                transform: translateY(-20px) translateX(0px) rotate(360deg) scale(1);
+                opacity: 0;
+            }
+        }
+
+        /* Header */
+        .header {
+            position: relative;
+            text-align: center;
+            padding: 4rem 2rem;
+            z-index: 10;
+            background: rgba(42, 28, 19, 0.9);
+            backdrop-filter: blur(10px);
+        }
+
+        .header h1 {
+            font-size: 3.5rem;
+            color: #d4af8c;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.5);
+            margin-bottom: 1rem;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .header p {
+            font-size: 1.3rem;
+            color: #f4e4d0;
+            font-style: italic;
+            animation: fadeInUp 1s ease-out 0.3s both;
+        }
+
+        /* Container principale */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        /* Sezioni */
+        .section {
+            background: rgba(244, 228, 208, 0.95);
+            margin: 3rem 0;
+            border-radius: 20px;
+            padding: 3rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(212, 175, 140, 0.3);
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section h2 {
+            font-size: 2.5rem;
+            color: #3a2317;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            position: relative;
+        }
+
+        .section h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: linear-gradient(90deg, #8b5a3c, #d4af8c);
+            border-radius: 2px;
+        }
+
+        .section h3 {
+            font-size: 1.8rem;
+            color: #5d3b2a;
+            margin: 2rem 0 1rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section p {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            text-align: left;
+            line-height: 1.8;
+        }
+
+        .section ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .section li {
+            margin: 0.8rem 0;
+            padding-left: 2rem;
+            position: relative;
+            font-size: 1rem;
+        }
+
+        .section li::before {
+            content: '☕';
+            position: absolute;
+            left: 0;
+            color: #8b5a3c;
+            font-size: 1.2rem;
+        }
+
+        /* Cards per consigli */
+        .tips-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .tip-card {
+            background: rgba(139, 90, 60, 0.1);
+            padding: 2rem;
+            border-radius: 15px;
+            border-left: 4px solid #8b5a3c;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .tip-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+
+        .tip-card h4 {
+            color: #5d3b2a;
+            margin-bottom: 1rem;
+            font-size: 1.3rem;
+        }
+
+        /* Footer */
+        .footer {
+            background: rgba(42, 28, 19, 0.9);
+            color: #f4e4d0;
+            text-align: center;
+            padding: 3rem 2rem;
+            margin-top: 4rem;
+            position: relative;
+            z-index: 10;
+        }
+
+        .footer h3 {
+            color: #d4af8c;
+            margin-bottom: 1rem;
+        }
+
+        .contact-info {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            flex-wrap: wrap;
+            margin: 2rem 0;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .contact-item a {
+            color: #f4e4d0;
+            text-decoration: none;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        .contact-item a:hover {
+            color: #d4af8c;
+            transform: translateY(-2px);
+        }
+
+        /* Animazioni */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .header p {
+                font-size: 1.1rem;
+            }
+            
+            .section {
+                padding: 2rem;
+                margin: 2rem 0;
+            }
+            
+            .section h2 {
+                font-size: 2rem;
+            }
+            
+            .container {
+                padding: 0 1rem;
+            }
+            
+            .contact-info {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+
+        /* Effetto scrolling per il testo */
+        .scroll-text {
+            overflow: hidden;
+        }
+
+        .scroll-text p {
+            animation: slideInFromLeft 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            opacity: 0;
+            transform: translateX(-50px);
+        }
+
+        .scroll-text h3 {
+            animation: slideInFromRight 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            opacity: 0;
+            transform: translateX(30px);
+        }
+
+        .scroll-text ul {
+            animation: fadeInUp 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        @keyframes slideInFromLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInFromRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Steam effect */
+        .steam {
+            position: absolute;
+            top: -20px;
+            right: 20px;
+            width: 20px;
+            height: 20px;
+            opacity: 0.6;
+        }
+
+        .steam::before {
+            content: '♨';
+            font-size: 1.5rem;
+            color: #d4af8c;
+            animation: steam 2s infinite;
+        }
+
+        @keyframes steam {
+            0%, 100% { transform: translateY(0) scale(1); opacity: 0.6; }
+            50% { transform: translateY(-10px) scale(1.1); opacity: 0.8; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Chicchi di caffè fluttuanti -->
+    <div class="coffee-beans" id="coffeeBeans"></div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="steam"></div>
+        <h1><i class="fas fa-coffee"></i> KAMIRA</h1>
+        <p>L'Arte del Caffè Cremoso come al Bar</p>
+    </header>
+
+    <div class="container">
+        <!-- Introduzione -->
+        <section class="section">
+            <h2><i class="fas fa-info-circle"></i> Introduzione</h2>
+            <div class="scroll-text">
+                <p>Kamira è il sistema rivoluzionario che ti permette di preparare un caffè cremoso come al bar direttamente a casa tua. Realizzata in acciaio di alta qualità, Kamira combina tradizione e innovazione per offrirti un'esperienza unica nel mondo del caffè.</p>
+                <p>Prima di iniziare la preparazione del caffè, è fondamentale eseguire lo spurgo, un'operazione preliminare che garantisce la qualità ottimale della bevanda.</p>
+            </div>
+        </section>
+
+        <!-- Spurgo -->
+        <section class="section">
+            <h2><i class="fas fa-tools"></i> Lo Spurgo</h2>
+            <div class="scroll-text">
+                <p>Lo spurgo deve essere effettuato ogni volta che la Kamira è fredda. Questa operazione serve a rimuovere eventuali residui d'acqua dai caffè precedenti e a riscaldare tutto il sistema.</p>
+                
+                <h3><i class="fas fa-list-ol"></i> Procedura</h3>
+                <ul>
+                    <li>Sganciare il braccetto e alzare la levetta in posizione orizzontale</li>
+                    <li>Riempire mezza vaschetta d'acqua (sufficiente a coprire il "funghetto")</li>
+                    <li>Abbassare la levetta e posizionare Kamira su fornello medio a fiamma alta</li>
+                    <li>Per piano a induzione: utilizzare 1000-1200 watt</li>
+                    <li>Posizionare una tazza grande sotto l'erogatore</li>
+                    <li>Quando l'acqua è completamente scesa, alzare la levetta per l'erogazione</li>
+                    <li>Spegnere quando inizia a uscire vapore</li>
+                </ul>
+                
+                <p><strong>Importante:</strong> Dopo lo spurgo, ridurre a fiamma medio-bassa (800 watt per induzione). Il primo caffè dopo l'acquisto può essere scartato a vostra discrezione.</p>
+            </div>
+        </section>
+
+        <!-- Preparazione del Caffè -->
+        <section class="section">
+            <h2><i class="fas fa-coffee"></i> Preparazione del Caffè</h2>
+            <div class="scroll-text">
+                <p>Una volta completato lo spurgo, si può procedere con la preparazione del caffè cremoso.</p>
+                
+                <h3><i class="fas fa-cogs"></i> Procedura Passo-Passo</h3>
+                <ul>
+                    <li>Alzare la leva in posizione orizzontale</li>
+                    <li>Riempire mezza vaschetta d'acqua</li>
+                    <li>Abbassare la leva e chiudere il coperchio</li>
+                    <li>Riempire il braccetto con caffè macinato per moka (7g per singolo, 12g per doppio)</li>
+                    <li>Livellare senza pressare eccessivamente</li>
+                    <li>Agganciare il braccetto alla macchina</li>
+                    <li>Accendere il fornello a fiamma medio-bassa</li>
+                    <li>Quando il caffè esce a "pallini di crema", aumentare la fiamma per 10 secondi</li>
+                    <li>Quando il getto diventa liquido e costante, abbassare nuovamente</li>
+                    <li>Spegnere dopo mezza tazza, il caffè continuerà a fluire</li>
+                    <li>Riportare lentamente la leva in verticale per scaricare la pressione</li>
+                </ul>
+                
+                <div class="tip-card">
+                    <h4><i class="fas fa-exclamation-triangle"></i> Nota Importante</h4>
+                    <p>Mantenere sempre nel range della mezza fiamma. Una fiamma troppo alta produce crema schiumosa con bolle d'aria che si smonta rapidamente.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Manutenzione -->
+        <section class="section">
+            <h2><i class="fas fa-wrench"></i> Manutenzione</h2>
+            <div class="scroll-text">
+                <h3><i class="fas fa-tools"></i> Spurgo Forzato (1-2 volte al mese)</h3>
+                <ul>
+                    <li>Rimuovere filtro e guarnizione dal tubo curvo</li>
+                    <li>Sganciare il braccetto</li>
+                    <li>Riempire completamente la vaschetta d'acqua</li>
+                    <li>Fornello a fiamma massima (1200 watt per induzione)</li>
+                    <li>Attendere l'ebollizione dell'acqua</li>
+                    <li>Alzare la levetta per far defluire tutta l'acqua</li>
+                    <li>Spegnere quando esce solo vapore</li>
+                    <li>Rimontare filtro e guarnizione</li>
+                </ul>
+
+                <h3><i class="fas fa-tint"></i> Decalcificazione (3-4 volte l'anno)</h3>
+                <ul>
+                    <li>Rimuovere filtro e guarnizione</li>
+                    <li>Riempire la vaschetta con aceto di vino bianco</li>
+                    <li>Aggiungere acqua (mezza o intera vaschetta)</li>
+                    <li>Portare a ebollizione per 3-4 minuti</li>
+                    <li>Erogare l'aceto in una tazza</li>
+                    <li>Eseguire uno spurgo classico per eliminare l'odore</li>
+                    <li>Rimontare i componenti</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Consigli e Varianti -->
+        <section class="section">
+            <h2><i class="fas fa-lightbulb"></i> Consigli e Varianti</h2>
+            <div class="tips-grid">
+                <div class="tip-card">
+                    <h4><i class="fas fa-thermometer-half"></i> Gestione Temperatura</h4>
+                    <p>Piano a induzione: 800-1000 watt iniziali, poi 500 watt durante l'erogazione veloce.</p>
+                </div>
+
+                <div class="tip-card">
+                    <h4><i class="fas fa-cup-hot"></i> Tazza Preriscaldata</h4>
+                    <p>Posizionare la tazza vicino al bordo della caldaia o preriscaldarla in microonde. Preferire vetro o ceramica sottile.</p>
+                </div>
+
+                <div class="tip-card">
+                    <h4><i class="fas fa-coffee"></i> Caffè Lungo</h4>
+                    <p>Utilizzare più acqua nella vaschetta per un caffè più lungo.</p>
+                </div>
+
+                <div class="tip-card">
+                    <h4><i class="fas fa-compress"></i> Caffè Ristretto</h4>
+                    <p>Abbassare la levetta appena il caffè diventa liquido, prima che esca la crema.</p>
+                </div>
+
+                <div class="tip-card">
+                    <h4><i class="fas fa-balance-scale"></i> Braccetto Doppio</h4>
+                    <p>Compattare bene e uniformemente la polvere. Utilizzare fiamma più bassa per erogazione lenta e uniforme.</p>
+                </div>
+
+                <div class="tip-card">
+                    <h4><i class="fas fa-seedling"></i> Tipo di Caffè</h4>
+                    <p>Miscele con alta concentrazione di robusta: non pressare. Arabica: pressare leggermente per maggiore intensità.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Bevande Speciali -->
+        <section class="section">
+            <h2><i class="fas fa-cocktail"></i> Bevande Speciali</h2>
+            <div class="scroll-text">
+                <h3><i class="fas fa-coffee"></i> Cappuccino</h3>
+                <p>Preparare un caffè super cremoso e posizionare una tazza di latte (freddo o riscaldato) sopra la caldaia durante l'erogazione per ottenere la massima cremosità.</p>
+
+                <h3><i class="fas fa-candy-cane"></i> Caffè Aromatizzati</h3>
+                <p>Spalmare crema alla nocciola, pistacchio, cioccolato o Nutella nella tazza prima dell'erogazione del caffè cremoso. Mescolare bene per un risultato personalizzato.</p>
+
+                <h3><i class="fas fa-birthday-cake"></i> Caffè con Cioccolato</h3>
+                <p>Appoggiare una barretta di cioccolato o un Kinder Bueno sopra la tazzina per farla sciogliere direttamente sotto il getto di caffè.</p>
+
+                <h3><i class="fas fa-leaf"></i> Altre Varianti</h3>
+                <p>Sperimentare con ginseng, decaffeinato e altre miscele, mantenendo sempre polvere a uso moka per garantire risultati ottimali.</p>
+            </div>
+        </section>
+
+        <!-- Pulizia -->
+        <section class="section">
+            <h2><i class="fas fa-spray-can"></i> Pulizia e Cura</h2>
+            <div class="scroll-text">
+                <ul>
+                    <li>Pulire esternamente con acqua o detergente per piatti usando spugna morbida</li>
+                    <li>Il braccetto può essere lavato in lavastoviglie</li>
+                    <li>Utilizzare i fondi di caffè come fertilizzante per le piante</li>
+                    <li>Controllare periodicamente la presenza di calcare (velo bianco in vaschetta)</li>
+                </ul>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <h3><i class="fas fa-phone"></i> Assistenza e Contatti</h3>
+        <div class="contact-info">
+            <div class="contact-item">
+                <i class="fab fa-whatsapp"></i>
+                <a href="https://api.whatsapp.com/send/?phone=393313217731&text&type=phone_number&app_absent=0&wame_ctl=1" target="_blank">WhatsApp: 3313217731</a>
+            </div>
+            <div class="contact-item">
+                <i class="fas fa-globe"></i>
+                <a href="https://www.espressokamira.net" target="_blank">www.espressokamira.net</a>
+            </div>
+            <div class="contact-item">
+                <i class="fab fa-youtube"></i>
+                <a href="https://youtube.com/@kamiraespressocremoso" target="_blank">Tutorial YouTube</a>
+            </div>
+            <div class="contact-item">
+                <i class="fab fa-facebook"></i>
+                <a href="https://www.facebook.com/groups/kamirafanclub/" target="_blank">Facebook FanPage</a>
+            </div>
+            <div class="contact-item">
+                <i class="fab fa-tiktok"></i>
+                <a href="https://www.tiktok.com/@nino_inventoredikamira?_t=ZN-8xI7q0vCpuA&_r=1" target="_blank">Tik Tok Nino Santoro</a>
+            </div>
+            <div class="contact-item">
+                <i class="fab fa-tiktok"></i>
+                <a href="https://www.tiktok.com/@kamira_live?_t=ZN-8xI7yLV9tZu&_r=1" target="_blank">Tik Tok Profilo Aziendale</a>
+            </div>
+        </div>
+        <p>Segui le community sui social per nuove idee e ricette. L'unico limite è la fantasia!</p>
+        <p style="margin-top: 2rem; opacity: 0.8;">© 2025 Kamira SRL - L'Arte del Caffè Cremoso</p>
+    </footer>
+
+    <script>
+        // Creazione chicchi di caffè fluttuanti
+        function createCoffeeBeans() {
+            const container = document.getElementById('coffeeBeans');
+            const beanCount = 20;
+
+            for (let i = 0; i < beanCount; i++) {
+                const bean = document.createElement('div');
+                bean.className = 'bean';
+                bean.style.left = Math.random() * 100 + '%';
+                bean.style.animationDelay = Math.random() * 12 + 's';
+                bean.style.animationDuration = (12 + Math.random() * 8) + 's';
+                
+                // Variazioni di dimensione
+                const size = 0.8 + Math.random() * 0.4;
+                bean.style.transform = `scale(${size})`;
+                
+                container.appendChild(bean);
+            }
+        }
+
+        // Animazione scroll per le sezioni
+        function handleScrollAnimation() {
+            const sections = document.querySelectorAll('.section');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        
+                        // Animazione testo migliorata
+                        const paragraphs = entry.target.querySelectorAll('.scroll-text p');
+                        const headings = entry.target.querySelectorAll('.scroll-text h3');
+                        const lists = entry.target.querySelectorAll('.scroll-text ul');
+                        
+                        paragraphs.forEach((p, index) => {
+                            setTimeout(() => {
+                                p.style.animationDelay = (index * 0.3) + 's';
+                                p.style.opacity = '1';
+                                p.style.transform = 'translateX(0)';
+                            }, index * 200);
+                        });
+                        
+                        headings.forEach((h, index) => {
+                            setTimeout(() => {
+                                h.style.animationDelay = (index * 0.2) + 's';
+                                h.style.opacity = '1';
+                                h.style.transform = 'translateX(0)';
+                            }, index * 150);
+                        });
+                        
+                        lists.forEach((ul, index) => {
+                            setTimeout(() => {
+                                ul.style.animationDelay = (index * 0.4) + 's';
+                                ul.style.opacity = '1';
+                                ul.style.transform = 'translateY(0)';
+                            }, index * 300);
+                        });
+                    }
+                });
+            }, {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            });
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+        }
+
+        // Inizializzazione
+        document.addEventListener('DOMContentLoaded', () => {
+            createCoffeeBeans();
+            handleScrollAnimation();
+        });
+
+        // Smooth scrolling per i link interni
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
